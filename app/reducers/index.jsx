@@ -11,7 +11,8 @@ const initialState = {
   campuses: [],
   students: [],
   studentUpdate: {},
-  campusUpdate: {}
+  campusUpdate: {},
+  campusStudents: []
 }
 
 /* -----------------    ACTION TYPES     ------------------ */
@@ -35,15 +36,16 @@ const DELETE_STUDENT = 'DELETE_STUDENT'
 const PUT_STUDENT = 'PUT_STUDENT'
 const PUT_CAMPUS  = 'PUT_CAMPUS'
 
+const GET_STUDENTS_CAMPUS  = 'GET_STUDENTS_CAMPUS'
 
 
 /* -----------------    ACTION CREATORS     ------------------ */
 
-export function getCampuses(campuses) {
+function getCampuses(campuses) {
   const action = {type: GET_CAMPUSES, campuses}
   return action
 }
-export function getStudents(students) {
+function getStudents(students) {
   const action = {type: GET_STUDENTS, students}
   return action
 }
@@ -93,8 +95,13 @@ export function putChangeStudent(student) {
   return action
 }
 
-export function putChangeCampus(campus) {
+function putChangeCampus(campus) {
   const action = {type: PUT_CAMPUS, campus}
+  return action
+}
+
+function getStudentCampus(students) {
+  const action = {type: GET_STUDENTS_CAMPUS, students}
   return action
 }
 
@@ -186,16 +193,14 @@ export function getOneStudent(id){
   }
 }
 
-
 export function putStudent(id,changeStudent) {
   return function thunk(dispatch){
     return axios.put(`api/students/${id}`, changeStudent)
     .then(res => res.data)
     .then(bool => {
-      if(bool){
+      console.log(bool)
         const action = putChangeStudent(changeStudent)
         dispatch(action)
-      }
     }).catch(console.error.bind(console))
   }
 }
@@ -206,8 +211,7 @@ export function putCampus(id,changeCampus) {
     .then(res => res.data)
     .then(bool => {
       if(bool){
-        console.log(changeCampus)
-        const action = putChangeStudent(changeCampus)
+        const action = putChangeCampus(changeCampus)
         dispatch(action)
       }
     }).catch(console.error.bind(console))
@@ -220,6 +224,17 @@ export function getOneCampus(id){
     .then(res => res.data)
     .then(campus =>{
       const action = getCampus(campus)
+      dispatch(action)
+    }).catch(console.error.bind(console))
+  }
+}
+
+export function fetchStudentsCampus(id){
+  return function thunk(dispatch){
+    return axios(`/api/campuses/${id}/students`)
+    .then(res => res.data)
+    .then(students =>{
+      const action = getStudentCampus(students)
       dispatch(action)
     }).catch(console.error.bind(console))
   }
@@ -242,7 +257,7 @@ const rootReducer = function(state = initialState, action) {
     })
     case POST_CAMPUS:
     return Object.assign({},state,{
-        campuses: action.campus
+        campuses: state.campuses.concat(action.campus)
     })
     case ADD_STUDENT:
     return Object.assign({},state,{
@@ -250,12 +265,11 @@ const rootReducer = function(state = initialState, action) {
     })
     case POST_STUDENT:
     return Object.assign({},state,{
-        students: action.student
+        students: state.students.concat(action.student)
     })
     case DELETE_CAMPUS:
     return Object.assign({},state,{
       campuses: state.campuses.filter((campus)=>{
-        console.log(action.campusid,campus.id)
         return campus.id !== action.campusid})
     })
     case DELETE_STUDENT:
@@ -270,16 +284,22 @@ const rootReducer = function(state = initialState, action) {
     case PUT_STUDENT:
     return Object.assign({},state,{
       students: state.students.filter((student)=>{
-        return student.id !== Number(action.student.id)}).concat(action.student)
+        action.student.id = +action.student.id
+        return student.id !== action.student.id}).concat(action.student)
     })
     case PUT_CAMPUS:
     return Object.assign({},state,{
-      students: state.campuses.filter((campus)=>{
-        return campus.id !== Number(action.campus.id)}).concat(action.campus)
+      campuses: state.campuses.filter((campus)=>{
+        action.campus.id = +action.campus.id
+        return campus.id !== action.campus.id}).concat(action.campus)
     })
     case GET_CAMPUS:
     return Object.assign({},state,{
         campusUpdate: action.campus
+    })
+    case GET_STUDENTS_CAMPUS:
+    return Object.assign({},state,{
+        campusStudents: action.students
     })
     default: return state
   }

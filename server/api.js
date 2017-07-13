@@ -45,14 +45,14 @@ api.get('/students/:id', (req, res) => {
 api.post('/campuses', (req, res, next) => {
   Campus.create(req.body)
   .then((result) => {
-    res.redirect('/api/campuses')
+    res.json(result)
   }).catch(next)
 })
 
 api.post('/students', (req, res, next) => {
   Student.create(req.body)
   .then((result) => {
-    res.redirect('/api/students')
+    res.json(result)
   }).catch(next)
 })
 

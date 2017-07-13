@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {FormGroup, FormControl, Button, ControlLabel} from 'react-bootstrap'
+import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
 import {getOneCampus,putCampus} from '../reducers'
 import store from '../store'
 
@@ -31,6 +31,7 @@ export default class CampusesUpdate extends Component {
     const putThunk = putCampus(this.props.match.params.id,evtObj)
     store.dispatch(putThunk)
     .then(()=>{this.props.history.push("/campuses")})
+
   }
 
   handleOnChange(event){
@@ -45,12 +46,13 @@ export default class CampusesUpdate extends Component {
   }
 
    render() {
-     //consditional rendering
+
      if(this.state.campusUpdate){
        const campusSelect = this.state.campusUpdate
      return (
        <div>
          <h1>Edit Campus</h1>
+
          <form onSubmit={this.handleOnSubmit}>
            <FormGroup bsSize="large">
              <ControlLabel>Campus Name</ControlLabel>
@@ -75,7 +77,10 @@ export default class CampusesUpdate extends Component {
            <Button type="submit">
              Enter
            </Button>
+
+
          </form>
+
        </div>
      )
    }else{

@@ -1,30 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {Table,Button,Glyphicon} from 'react-bootstrap'
 import {removeCampus} from '../reducers'
-import store from '../store';
 
-export default class Campuses extends Component {
-  constructor (){
-    super()
-    this.state = store.getState();
-  }
+function Campuses (props) {
 
-  componentDidMount () {
-    this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
-  }
-
-  componentWillUnmount () {
-    this.unsubscribe();
-  }
-
-  handleDelete(event){
-    if(confirm(`Please confirm delete of ...${event.target.dataset.name}`)){
-      store.dispatch(removeCampus(event.target.dataset.value))
-    }
-  }
-
-  render() {
     return (
       <div>
         <h1>Campuses</h1>
@@ -39,7 +20,7 @@ export default class Campuses extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.campuses.map((campus,key)=>{
+            {props.campuses.map((campus,key)=>{
               return (<tr key={campus.id}>
                 <td>{campus.name}</td>
                 <td><Link to={`/campuses/${campus.id}/students`}>
@@ -51,7 +32,7 @@ export default class Campuses extends Component {
                     <Glyphicon glyph='glyphicon glyphicon-pencil'/>
                   </Button>
                 </Link></td>
-                <td><Button bsSize='xsmall' onClick={this.handleDelete}>
+                <td><Button bsSize='xsmall' onClick={props.handleDelete}>
                   <Glyphicon data-name={campus.name} data-value={campus.id} glyph='glyphicon glyphicon-remove'/>
                 </Button></td>
               </tr>)})}
@@ -59,5 +40,21 @@ export default class Campuses extends Component {
         </Table>
       </div>
     )
+}
+
+const mapStateToProps = (state) => {
+  return {
+    campuses: state.campuses
   }
 }
+const mapDispatchToProps= (dispatch) => {
+  return {
+    handleDelete(event){
+      if(confirm(`Please confirm delete of ...${event.target.dataset.name}`)){
+        dispatch(removeCampus(event.target.dataset.value))
+      }
+    }
+  }
+}
+const ContainerCampuses = connect(mapStateToProps,mapDispatchToProps)(Campuses)
+export default ContainerCampuses

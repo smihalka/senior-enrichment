@@ -36,7 +36,7 @@ function CampusesAdd (props) {
 
 const mapStateToProps = null
 
-const mapDispatchToProps = function(dispatch){
+const mapDispatchToProps = function(dispatch,ownProps){
    return{
      handleOnChange(event){
        const value = event.target.value
@@ -51,7 +51,9 @@ const mapDispatchToProps = function(dispatch){
        dispatch(postCampus({
          name: event.target.name.value,
          image: event.target.image.value
-       }))
+       })).then(()=>{
+         ownProps.history.push('/campuses')
+       })
 
      }
    }

@@ -11,11 +11,10 @@ import CampusesAdd from './CampusesAdd'
 import CampusesStudents from './CampusesStudents'
 import Nav from './Nav'
 import {fetchCampuses,fetchStudents} from '../reducers'
-import store from '../store';
 
 class Routes extends Component {
   componentDidMount(){
-    this.props.fetchInitialState()
+    this.props.fetchInitialData()
   }
   render() {
     return (
@@ -42,13 +41,13 @@ class Routes extends Component {
 }
 
 
-const mapProps = null;
+const mapStateToProps = null;
 
-const mapDispatch = dispatch => ({
-  fetchInitialState: () => {
-    dispatch(fetchStudents());
-    dispatch(fetchCampuses());
+const mapDispatchToProps = dispatch => ({
+  fetchInitialData: () => {
+    dispatch(fetchStudents())
+    dispatch(fetchCampuses())
   }
 });
 
-export default connect(mapProps, mapDispatch)(Routes);
+export default connect(mapStateToProps, mapDispatchToProps)(Routes);

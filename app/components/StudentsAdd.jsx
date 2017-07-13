@@ -63,7 +63,7 @@ function StudentsAdd (props) {
 
   const mapStateToProps = null
 
-  const mapDispatchToProps = function(dispatch){
+  const mapDispatchToProps = function(dispatch,ownProps){
      return{
        handleOnChange(event){
          const value = event.target.value
@@ -80,7 +80,9 @@ function StudentsAdd (props) {
            last_name: event.target.last_name.value,
            email: event.target.email.value,
            campusId: event.target.campusId.value
-         }))
+         })).then(()=>{
+           ownProps.history.push("/students")
+         })
 
        }
      }
