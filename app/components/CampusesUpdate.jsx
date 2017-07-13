@@ -1,22 +1,36 @@
 import React, { Component } from 'react';
-import axios from 'axios'
-import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
+import {FormGroup, FormControl, Button, ControlLabel} from 'react-bootstrap'
+import {getOneCampus,putCampus} from '../reducers'
+import store from '../store'
 
 export default class CampusesUpdate extends Component {
   constructor (){
     super()
-    this.state = {
-      campus: {}
-    }
+    this.state = store.getState()
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleOnSubmit = this.handleOnSubmit.bind(this)
   }
 
+  componentDidMount () {
+    const editThunk = getOneCampus(this.props.match.params.id)
+    store.dispatch(editThunk)
+    this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
+  }
+
+  componentWillUnmount () {
+    this.unsubscribe();
+  }
+
   handleOnSubmit(event){
     event.preventDefault()
-    console.log(this.state)
-    //  axios.post('/api/campuses',this.state)
-    //  .then(res)
+    const evtObj = {
+      id: this.props.match.params.id,
+      name: event.target.campus.value,
+      image: event.target.image.value
+    }
+    const putThunk = putCampus(this.props.match.params.id,evtObj)
+    store.dispatch(putThunk)
+    .then(()=>{this.props.history.push("/campuses")})
   }
 
   handleOnChange(event){
@@ -26,44 +40,46 @@ export default class CampusesUpdate extends Component {
     const campusid = Number(event.target.dataset.id)
     console.log(value,event.target.dataset.id)
     this.setState({
-
-      campus:{[name]: value}
+      campusUpdate:{[name]: value}
     })
   }
 
-   componentDidMount(){
-     axios.get(`/api/campuses/${this.props.match.params.id}`)
-     .then(res => res.data)
-     .then((campus) =>{
-       this.setState({campus: campus})
-     }).catch(console.log)
-   }
    render() {
+     //consditional rendering
+     if(this.state.campusUpdate){
+       const campusSelect = this.state.campusUpdate
      return (
        <div>
-         <h1>Edit Campus {this.state.campus.name} #{this.state.campus.id}</h1>
-
+         <h1>Edit Campus</h1>
          <form onSubmit={this.handleOnSubmit}>
            <FormGroup bsSize="large">
              <ControlLabel>Campus Name</ControlLabel>
              <FormControl
                className="form-control"
                name='campus'
-               data-id={this.state.campus.id}
                type='text'
-               value={this.state.campus.name}
-               placeholder="First Name"
+               value={campusSelect.name}
+               onChange={this.handleOnChange}
+             required/>
+           </FormGroup>
+           <FormGroup bsSize="large">
+             <ControlLabel>Image URL</ControlLabel>
+             <FormControl
+               className="form-control"
+               name='image'
+               type='text'
+               value={campusSelect.image}
                onChange={this.handleOnChange}
              required/>
            </FormGroup>
            <Button type="submit">
              Enter
            </Button>
-
-
          </form>
-
        </div>
      )
+   }else{
+     return(<div><h1>Edit comming soon!</h1></div>)
+   }
    }
 }

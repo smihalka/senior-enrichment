@@ -34,7 +34,6 @@ api.get('/students/', (req, res) => {
 })
 //student by ID
 api.get('/students/:id', (req, res) => {
-  console.log('=============================here',req.params.id)
   Student.findOne({where:{
     id: req.params.id
   }})
@@ -64,7 +63,7 @@ api.put('/campuses/:id', (req, res, next) => {
     {where:{
       id: req.params.id
     }}).then((result) => {
-      //res.redirect('/api/campuses')
+      res.json(result)
     }).catch(next)
   })
 

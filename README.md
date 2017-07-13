@@ -156,3 +156,15 @@ X move data to store....
 - create button functionality
 
 if needed make it look rad
+
+
+check post for campus (do we need that ADD_CAPMUS)
+check and fix put for campus (udpate to thunk)
+redo campus to students view
+
+then - lets add some validation
+then - use the pictures - on campus view home screen
+set default pic to your moms house maybe
+
+ok now do combine reducers and make sure you have notes on your
+and you `know what the fuck is going on`

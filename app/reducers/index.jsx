@@ -4,27 +4,38 @@ import axios from 'axios';
 
 
 /* ------------    INITIAL STATE    ------------------ */
+//not sure campus and student update are needed, but they
+//make me feel safe for now... or not because I am wondering
+//if we need them
 const initialState = {
   campuses: [],
   students: [],
-  studentUpdate: {}
+  studentUpdate: {},
+  campusUpdate: {}
 }
 
 /* -----------------    ACTION TYPES     ------------------ */
 
-const GET_CAMPUSES = 'GET_CAMPUSES';
+const GET_CAMPUSES = 'GET_CAMPUSES'
+const GET_CAMPUS = 'GET_CAMPUS'
+//not sure being used correctly
 const ADD_CAMPUS = 'ADD_CAMPUS'
 const UPDATE_CAMPUS = 'UPDATE_CAMPUS'
 const DELETE_CAMPUS = 'DELETE_CAMPUS'
 const POST_CAMPUS = 'POST_CAMPUS'
 
-const GET_STUDENTS = 'GET_STUDENTS';
-const GET_STUDENT = 'GET_STUDENT';
+const GET_STUDENTS = 'GET_STUDENTS'
+const GET_STUDENT = 'GET_STUDENT'
+//not sure being used correctly
 const ADD_STUDENT = 'ADD_STUDENT'
 const POST_STUDENT = 'POST_STUDENT'
 const UPDATE_STUDENT = 'UPDATE_STUDENT'
 const DELETE_STUDENT = 'DELETE_STUDENT'
+
 const PUT_STUDENT = 'PUT_STUDENT'
+const PUT_CAMPUS  = 'PUT_CAMPUS'
+
+
 
 /* -----------------    ACTION CREATORS     ------------------ */
 
@@ -62,6 +73,11 @@ export function getStudent(student) {
   return action
 }
 
+export function getCampus(campus) {
+  const action = {type: GET_CAMPUS, campus}
+  return action
+}
+
 export function deleteCampus(campusid) {
   const action = {type: DELETE_CAMPUS, campusid}
   return action
@@ -74,6 +90,11 @@ export function deleteStudent(studentid) {
 
 export function putChangeStudent(student) {
   const action = {type: PUT_STUDENT, student}
+  return action
+}
+
+export function putChangeCampus(campus) {
+  const action = {type: PUT_CAMPUS, campus}
   return action
 }
 
@@ -160,18 +181,7 @@ export function getOneStudent(id){
     .then(res => res.data)
     .then(student =>{
       const action = getStudent(student)
-      dispatch(action);
-    }).catch(console.error.bind(console))
-  }
-}
-
-export function putOneStudent(id){
-  return function thunk(dispatch){
-    return axios(`/api/students/${id}`)
-    .then(res => res.data)
-    .then(student =>{
-      const action = getStudent(student)
-      dispatch(action);
+      dispatch(action)
     }).catch(console.error.bind(console))
   }
 }
@@ -183,13 +193,38 @@ export function putStudent(id,changeStudent) {
     .then(res => res.data)
     .then(bool => {
       if(bool){
-        console.log(changeStudent)
         const action = putChangeStudent(changeStudent)
         dispatch(action)
       }
     }).catch(console.error.bind(console))
   }
 }
+
+export function putCampus(id,changeCampus) {
+  return function thunk(dispatch){
+    return axios.put(`api/campuses/${id}`, changeCampus)
+    .then(res => res.data)
+    .then(bool => {
+      if(bool){
+        console.log(changeCampus)
+        const action = putChangeStudent(changeCampus)
+        dispatch(action)
+      }
+    }).catch(console.error.bind(console))
+  }
+}
+
+export function getOneCampus(id){
+  return function thunk(dispatch){
+    return axios(`/api/campuses/${id}`)
+    .then(res => res.data)
+    .then(campus =>{
+      const action = getCampus(campus)
+      dispatch(action)
+    }).catch(console.error.bind(console))
+  }
+}
+
 
 /* ------------       REDUCERS     ------------------ */
 
@@ -235,8 +270,16 @@ const rootReducer = function(state = initialState, action) {
     case PUT_STUDENT:
     return Object.assign({},state,{
       students: state.students.filter((student)=>{
-        //console.log(action.student.id, student.id)
         return student.id !== Number(action.student.id)}).concat(action.student)
+    })
+    case PUT_CAMPUS:
+    return Object.assign({},state,{
+      students: state.campuses.filter((campus)=>{
+        return campus.id !== Number(action.campus.id)}).concat(action.campus)
+    })
+    case GET_CAMPUS:
+    return Object.assign({},state,{
+        campusUpdate: action.campus
     })
     default: return state
   }

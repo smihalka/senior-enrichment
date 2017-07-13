@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios'
-import { Link } from 'react-router-dom';
-import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
+import {FormGroup, FormControl, Button, ControlLabel} from 'react-bootstrap'
 import {getOneStudent,putStudent} from '../reducers'
 import store from '../store'
-
 
 export default class StudentsUpdate extends Component {
   constructor (){
@@ -14,10 +11,14 @@ export default class StudentsUpdate extends Component {
     this.handleOnSubmit = this.handleOnSubmit.bind(this)
   }
 
+  componentDidMount () {
+    const editThunk = getOneStudent(this.props.match.params.id)
+    store.dispatch(editThunk)
+    this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
+  }
   componentWillUnmount () {
     this.unsubscribe();
   }
-
 
   handleOnSubmit(event){
     event.preventDefault()
@@ -32,38 +33,24 @@ export default class StudentsUpdate extends Component {
     const putThunk = putStudent(this.props.match.params.id,evtObj)
     store.dispatch(putThunk)
     .then(()=>{this.props.history.push("/students")})
-
-    //  axios.post('/api/campuses',this.state)
-    //  .then(res)
   }
 
   handleOnChange(event){
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
-    console.log(value)
-    //store.dispatch()
+  //not sure about this part here
      this.setState({
        studentUpdate:{[name]: value}
      })
 }
-componentDidMount () {
-  const editThunk = getOneStudent(this.props.match.params.id)
-  store.dispatch(editThunk)
-  this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
-}
 
 render() {
-  console.log('update',this.state.studentUpdate)
-
+  //consditional rendering
   if(this.state.studentUpdate){
-
     const studentSelect = this.state.studentUpdate
-
     return (
-
       <div>
-
         <h3>Student Info </h3>
         <form data-id={studentSelect.id} onSubmit={this.handleOnSubmit}>
           <FormGroup bsSize="large">
@@ -72,9 +59,7 @@ render() {
               className="form-control"
               name='first_name'
               type='text'
-              //defaultValue={this.state.student.first_name}
               value={studentSelect.first_name}
-              //placeholder="First Name"
               onChange={this.handleOnChange}
             required/>
           </FormGroup>
@@ -85,7 +70,6 @@ render() {
               name='last_name'
               type='text'
               value={studentSelect.last_name}
-              placeholder="Last Name"
               onChange={this.handleOnChange}
             required/>
           </FormGroup>
@@ -96,7 +80,6 @@ render() {
               name='email'
               type='text'
               value={studentSelect.email}
-              placeholder="First Name"
               onChange={this.handleOnChange}
             required/>
           </FormGroup>
@@ -107,7 +90,6 @@ render() {
               name='campusId'
               type='text'
               value={studentSelect.campusId}
-
               onChange={this.handleOnChange}
             required/>
           </FormGroup>
@@ -115,12 +97,10 @@ render() {
             Enter
           </Button>
         </form>
-
       </div>
-
           )
         }else{
-          return (<div></div>)
+          return (<div><h1>Edit comming soon!</h1></div>)
         }
       }
 }
