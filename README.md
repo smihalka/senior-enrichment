@@ -36,26 +36,27 @@ Use at least sequelize, express, react, and redux when creating this app. You ca
 #### See Wireframes folder for visual
 
 - Navigation: as a user I...
-  * will land on **Home** by default
-  * can navigate to **Campuses** from **Home**
-  * can navigate to **Students** from **Home**
-  * can navigate to view a **Single Campus** from **Campuses**
-  * can navigate to view a **Single Student** from **Students**
-  * can navigate to view a **Single Student** from **Single Campus** (for any student at that campus)
-  * can navigate to view that student's **Single Campus** from **Single Student**
+  * will land on **Home** by default X
+  * can navigate to **Campuses** from **Home** X
+  * can navigate to **Students** from **Home** X
+  * can navigate to view a **Single Campus** from **Campuses** X
+  * can navigate to view a **Single Student** from **Students** X
+  * can navigate to view a **Single Student** from **Single Campus** (for any student at that  campus) X
+  * can navigate to view that student's **Single Campus** from **Single Student** (need to do)
 
 - Views: as a user I...
-  * see a list of all campuses on the **Campuses** view
-  * see a list of all students on the **Students** view
-  * see details about a campus on the **Single Campus** view, including that campus's students
+  * see a list of all campuses on the **Campuses** view X
+  * see a list of all students on the **Students** view X
+  * see details about a campus on the **Single Campus** view, including that campus's students (change this single campus view)
   * see details about a student on the **Single Student** view, including that student's campus
+  chang this, its an edit now X
 
 - Actions: as a user I...
-  * can create a campus
-  * can edit a campus's info, including adding/removing a student to/from that campus
+  * can create a campus X
+  * can edit a campus's info, including adding/removing a student to/from that campus (work on)
   * can delete a campus
-  * can create a student
-  * can edit a student's info, including the campus that student is assigned to
+  * can create a student X
+  * can edit a student's info, including the campus that student is assigned to (work on)
   * can delete a student
 
 ### Routes
@@ -88,7 +89,7 @@ DELETE
 
 ### How to test functionality without a frontend
 - GET: use your browser
-- POST / PUT / DELETE : 
+- POST / PUT / DELETE :
  - CLI (command line interface) with `curl`
    - e.g. `curl -H "Content-Type: application/json" -X POST -d '{"username":"kate","password":"1234"}' http://localhost:3000/api/login`
    - `-H`: headers. `-X`: verb. `-d`: data (must be of the type specified in headers). http://[address]:[port]/[route_path]
@@ -109,3 +110,49 @@ Once you've recorded your screencast, please *upload it to YouTube as an unliste
 - Frontend logic and functionality (25%)
 - Design + Bonus features (up to 10 Extra Credit points)
 
+#Last Week
+*DBs done for now*
+#Sunday
+- write stuff about those DB calls
+- create seed file for
+  * campuses
+    - find campus images UCSB, SB City College, VC, CSCI, SLO, FULLSTACK NY/REMOTE
+  * students  + to campus
+    - Family and cohort
+- make routes
+  GET
+  - all campuses
+  - a campus by id
+  - all students
+  - a student by id
+  ```
+
+  ```
+  POST
+  - new campus
+  - new student
+  ```
+
+  ```
+  PUT
+  - updated student info for one student
+  - updated campus info for one campus
+  ```
+
+  ```
+  DELETE
+  - a campus
+  - a student
+
+- make views without data
+  * link views / navigation
+
+- try to make views with data? do I mess with state right now?
+
+X
+
+X move data to store....
+- create forms functions and the like
+- create button functionality
+
+if needed make it look rad
