@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
-import store from '../store';
 import {addCampus,postCampus,emptyCampus} from '../reducers'
 import {connect} from 'react-redux'
 import {theValidator, campusButton} from './FormValidateCampus'

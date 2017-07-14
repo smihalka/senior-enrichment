@@ -54,8 +54,8 @@ function getStudents(students) {
   return action
 }
 
-export function updateStudent(student) {
-  const action = {type: UPDATE_STUDENT, student}
+export function updateStudent(updateStudent) {
+  const action = {type: UPDATE_STUDENT, updateStudent}
   return action
 }
 
@@ -301,7 +301,7 @@ const rootReducer = function(state = initialState, action) {
     })
     case UPDATE_STUDENT:
     return Object.assign({},state,{
-        studentUpdate: Object.assign({},state.updateStudent,action.updateStudent)
+        studentUpdate: Object.assign({},state.studentUpdate,action.updateStudent)
     })
     case UPDATE_CAMPUS:
     return Object.assign({},state,{

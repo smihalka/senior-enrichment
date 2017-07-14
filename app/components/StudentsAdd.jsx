@@ -1,62 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
-import store from '../store';
 import {addStudent,postStudent,emptyStudent} from '../reducers'
 import {connect} from 'react-redux'
 import validator from 'email-validator'
-
+import {theValidator, studentButton} from './FormValidateStudent'
 
 function StudentsAdd (props) {
-  //valid stuff could make file likely if have time
-    const theValidator = (props)=>{
-      let first_nameValidation = null
-      let last_nameValidation = null
-      let email_Validation = null
-      if(props.first_name){
-        if(props.first_name.length < 3){
-          first_nameValidation = 'error'
-        }else{
-          first_nameValidation = 'success'
-        }
-      }
-      if(props.last_name){
-        if(props.last_name.length < 3){
-          last_nameValidation = 'error'
-        }else{
-          last_nameValidation = 'success'
-        }
-      }
-
-      if(validator.validate(props.email)){
-        email_Validation = 'success'
-      }else{
-        if(!props.email){
-          email_Validation = null
-        }else{
-          email_Validation = 'error'
-        }
-
-      }
-      return ({first_nameValidation,last_nameValidation,email_Validation})
-    }
-
     const {first_nameValidation, last_nameValidation, email_Validation} = theValidator(props.newStudent)
-
-    const addNewStudentButton = (first,last,email)=>{
-      if(first !== 'success' || last !== 'success' || email !== 'success'){
-        return (
-          <Button disabled type="submit">
-            Enter
-          </Button>
-        )
-      }else{
-        return(
-          <Button type="submit">
-            Enter
-          </Button>
-        )
-      }
-    }
       return (
         <div>
           <h3>Add New Student</h3><br/>
@@ -99,14 +49,11 @@ function StudentsAdd (props) {
                 })}
               </FormControl>
             </FormGroup>
-
-            {addNewStudentButton(first_nameValidation,last_nameValidation,email_Validation)}
+            {studentButton(first_nameValidation,last_nameValidation,email_Validation)}
           </form>
         </div>
       )
-
   }
-
 
   const mapStateToProps = function(state){
     return{

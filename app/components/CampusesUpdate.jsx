@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
+import {FormGroup,FormControl,Button,ControlLabel} from 'react-bootstrap'
 import {getOneCampus,putCampus,updateCampus} from '../reducers'
 import {connect} from 'react-redux'
-import store from '../store'
 import {theValidator, campusButton} from './FormValidateCampus'
 
 class CampusUpdate extends Component {

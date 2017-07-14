@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {Table,Button,Glyphicon} from 'react-bootstrap'
@@ -21,7 +21,6 @@ function Campuses (props) {
         )
       }
     }
-
     const removeButton = (id,name) => {
       const studentCount = props.students.filter(student => student.campusId === id).length
       if(studentCount > 0){
@@ -38,8 +37,6 @@ function Campuses (props) {
           )
         }
       }
-
-
 
     return (
       <div>

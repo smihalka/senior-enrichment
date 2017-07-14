@@ -12,6 +12,8 @@ import CampusesStudents from './CampusesStudents'
 import Nav from './Nav'
 import {fetchCampuses,fetchStudents} from '../reducers'
 
+
+
 class Routes extends Component {
   componentDidMount(){
     this.props.fetchInitialData()

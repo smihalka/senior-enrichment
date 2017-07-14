@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
-import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
-import store from '../store';
-import {addStudent,postStudent,emptyStudent} from '../reducers'
-import {connect} from 'react-redux'
+import React from 'react';
+import {Button} from 'react-bootstrap'
 import validator from 'email-validator'
 
 
@@ -41,7 +38,3 @@ export function campusButton (image,name) {
     )
   }
 }
-
-
-
-//const {nameValidation, imageValidation} = theValidator(props.newCampus)

@@ -1,95 +1,61 @@
 import React, { Component } from 'react';
 import {FormGroup, FormControl, Button, ControlLabel} from 'react-bootstrap'
 import {getOneStudent,putStudent,updateStudent} from '../reducers'
-import store from '../store'
-import validator from 'email-validator'
+import {connect} from 'react-redux'
+import {theValidator, studentButton} from './FormValidateStudent'
 
-export default class StudentsUpdate extends Component {
-  constructor (){
-    super()
-    this.state = store.getState()
-    this.handleOnChange = this.handleOnChange.bind(this);
-    this.handleOnSubmit = this.handleOnSubmit.bind(this)
-  }
+class StudentUpdate extends Component {
 
   componentDidMount () {
-    const editThunk = getOneStudent(this.props.match.params.id)
-    store.dispatch(editThunk)
-    this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
+    this.props.fetchUpdateStudentData(this.props.match.params.id)
   }
-  componentWillUnmount () {
-    this.unsubscribe();
-  }
-
-  handleOnSubmit(event){
-    event.preventDefault()
-    console.log(this.state,event.target.first_name.value)
-    const evtObj = {
-      id: this.props.match.params.id,
-      first_name: event.target.first_name.value,
-      last_name: event.target.last_name.value,
-      email: event.target.email.value,
-      campusId: event.target.campusId.value
-    }
-    const putThunk = putStudent(this.props.match.params.id,evtObj)
-    store.dispatch(putThunk)
-    .then(()=>{this.props.history.push("/students")})
-  }
-
-  handleOnChange(event){
-    const target = event.target
-    const value = target.type === 'checkbox' ? target.checked : target.value
-    const name = target.name
-    console.log(value)
-     this.setState({
-       studentUpdate:{[name]: value}
-     })
-    // store.dispatch(updateStudent({[name]: value}))
-}
 
 render() {
   //consditional rendering
-  if(this.state.studentUpdate){
-    const studentSelect = this.state.studentUpdate
+  if(this.props.studentUpdate){
+    const studentSelect = this.props.studentUpdate
+    const {first_nameValidation, last_nameValidation, email_Validation} = theValidator(studentSelect)
+
     return (
       <div>
         <h3>Student Info </h3>
-        <form data-id={studentSelect.id} onSubmit={this.handleOnSubmit}>
-          <FormGroup bsSize="large">
+        <form data-id={studentSelect.id} onSubmit={this.props.handleOnSubmit}>
+          <input type="hidden" name="id" value={this.props.match.params.id}/>
+          <FormGroup bsSize="large" validationState={first_nameValidation}>
             <ControlLabel>First Name</ControlLabel>
             <FormControl
               className="form-control"
               name='first_name'
               type='text'
               value={studentSelect.first_name}
-              onChange={this.handleOnChange}
+              onChange={this.props.handleOnChange}
             required/>
           </FormGroup>
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" validationState={last_nameValidation}>
             <ControlLabel>Last Name</ControlLabel>
             <FormControl
               className="form-control"
               name='last_name'
               type='text'
               value={studentSelect.last_name}
-              onChange={this.handleOnChange}
+              onChange={this.props.handleOnChange}
             required/>
           </FormGroup>
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" validationState={email_Validation}>
             <ControlLabel>Email</ControlLabel>
             <FormControl
               className="form-control"
               name='email'
               type='text'
               value={studentSelect.email}
-              onChange={this.handleOnChange}
+              onChange={this.props.handleOnChange}
             required/>
           </FormGroup>
 
           <FormGroup controlId="formControlsSelect" bsSize="large">
             <ControlLabel>Campus</ControlLabel>
-            <FormControl componentClass="select" placeholder="select" onChange={this.handleOnChange} name='campusId'>
-              {this.state.campuses.map((campus)=>{
+            <FormControl componentClass="select" placeholder="select" onChange={this.props.handleOnChange} name='campusId'>
+              {this.props.campuses.map((campus)=>{
                 if(campus.id===studentSelect.campusId){
                   return <option key={campus.id} selected="selected" value={campus.id}>{campus.id}: {campus.name}</option>
                 }else{
@@ -98,9 +64,7 @@ render() {
               })}
             </FormControl>
           </FormGroup>
-          <Button type="submit">
-            Enter
-          </Button>
+          {studentButton(first_nameValidation,last_nameValidation,email_Validation)}
         </form>
       </div>
           )
@@ -109,3 +73,43 @@ render() {
         }
       }
 }
+
+
+const mapStateToProps = function(state){
+  return{
+    studentUpdate: state.studentUpdate,
+    campuses: state.campuses
+  }
+}
+
+const mapDispatchToProps = function(dispatch,ownProps){
+   return{
+     handleOnChange(event){
+       const target = event.target
+       const value = target.type === 'checkbox' ? target.checked : target.value
+       const name = target.name
+       dispatch(updateStudent({[name]: value}))
+     },
+     handleOnSubmit(event){
+       event.preventDefault()
+       const evtObj = {
+         id:  event.target.id.value,
+         first_name: event.target.first_name.value,
+         last_name: event.target.last_name.value,
+         email: event.target.email.value,
+         campusId: event.target.campusId.value
+       }
+       const putThunk = putStudent(event.target.id.value,evtObj)
+       dispatch(putThunk)
+       .then(()=>{ownProps.history.push("/students")})
+     },
+     fetchUpdateStudentData(id){
+       const editThunk = getOneStudent(id)
+       dispatch(editThunk)
+     }
+
+   }
+ }
+
+ const StudentUpdateContainer = connect(mapStateToProps,mapDispatchToProps)(StudentUpdate)
+ export default StudentUpdateContainer
