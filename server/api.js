@@ -29,14 +29,17 @@ api.get('/campuses/:id', (req, res) => {
 //a
 //all students
 api.get('/students/', (req, res) => {
-  Student.findAll()
+  Student.findAll({})
   .then(result => res.json(result))
 })
+
 //student by ID
 api.get('/students/:id', (req, res) => {
-  Student.findOne({where:{
-    id: req.params.id
-  }})
+  Student.findOne({
+    where:{
+      id: req.params.id
+    }
+  })
   .then(result => res.json(result))
 })
 

@@ -6,7 +6,7 @@ import {Table,Button,Glyphicon} from 'react-bootstrap'
 
 function Students (props) {
 
-    return (
+  return (
       <div>
         <h1>Students</h1>
         <h4><Link to={`/students/add`}>Add New Student</Link></h4>
@@ -18,7 +18,7 @@ function Students (props) {
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Edit</th>
-                <th>Campus</th>
+                <th>CampusId</th>
                 <th>Remove</th>
               </tr>
             </thead>
@@ -33,7 +33,7 @@ function Students (props) {
                       <Glyphicon glyph='glyphicon glyphicon-pencil'/>
                     </Button>
                   </Link></td>
-                  <td>{student.campusId}</td>
+                  <td><Link to={`/campuses/${student.campusId}/students`}>{student.campusId}</Link></td>
                   <td><Button bsSize='xsmall' onClick={props.handleDelete}>
                     <Glyphicon data-name={student.first_name} data-value={student.id} glyph='glyphicon glyphicon-remove'/>
                   </Button></td>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {FormGroup, FormControl, Button, ControlLabel} from 'react-bootstrap'
 import {getOneStudent,putStudent,updateStudent} from '../reducers'
 import {connect} from 'react-redux'
+import { Link } from 'react-router-dom';
 import {theValidator, studentButton} from './FormValidateStudent'
 
 class StudentUpdate extends Component {
@@ -18,7 +19,7 @@ render() {
 
     return (
       <div>
-        <h3>Student Info </h3>
+        <h3>Student id# {studentSelect.id} Info part of CampusId <Link to={`/campuses/${studentSelect.campusId}`}>{studentSelect.campusId}</Link></h3>
         <form data-id={studentSelect.id} onSubmit={this.props.handleOnSubmit}>
           <input type="hidden" name="id" value={this.props.match.params.id}/>
           <FormGroup bsSize="large" validationState={first_nameValidation}>

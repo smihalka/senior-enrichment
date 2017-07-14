@@ -25,7 +25,7 @@ class CampusesStudents extends Component {
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Edit</th>
-
+                
               </tr>
             </thead>
             <tbody>
