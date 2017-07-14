@@ -98,7 +98,7 @@ const mapDispatchToProps = function(dispatch,ownProps){
          first_name: event.target.first_name.value,
          last_name: event.target.last_name.value,
          email: event.target.email.value,
-         campusId: event.target.campusId.value
+         campusId: Number(event.target.campusId.value)
        }
        const putThunk = putStudent(event.target.id.value,evtObj)
        dispatch(putThunk)
