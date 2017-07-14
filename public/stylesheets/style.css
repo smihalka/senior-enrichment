@@ -12,3 +12,22 @@ html, body {
 .container{
   width:80%;
 }
+.displayimg img{
+  border:  solid rgb(211, 211, 211) 3px;
+  background-color: rgb(201, 201, 201);
+  width:100%;
+  text-align: center;
+  padding: 30px 30px;
+}
+
+.papaSmurf {
+  
+}
+
+.front {
+  padding: 30px 30px;
+  font-size: 1.4em;
+  float: left;
+  width: 50%;
+  height: 100%;
+}

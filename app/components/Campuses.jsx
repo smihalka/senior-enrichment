@@ -5,6 +5,41 @@ import {Table,Button,Glyphicon} from 'react-bootstrap'
 import {removeCampus} from '../reducers'
 
 function Campuses (props) {
+  //Buttonsdisplay
+  const studentViewButton = (id) => {
+    const studentCount = props.students.filter(student => student.campusId === id).length
+    if(studentCount > 0){
+      return (
+        <Button  bsSize='xsmall' onClick={props.handleClick}>
+          <Glyphicon data-id={id} glyph='glyphicon glyphicon-education'/>
+        </Button>)
+      }else{
+        return (
+          <Button  bsSize='xsmall' disabled  onClick={props.handleClick}>
+            <Glyphicon data-id={id} glyph='glyphicon glyphicon-education'/>
+          </Button>
+        )
+      }
+    }
+
+    const removeButton = (id,name) => {
+      const studentCount = props.students.filter(student => student.campusId === id).length
+      if(studentCount > 0){
+        return (
+          <Button bsSize='xsmall' disabled onClick={props.handleDelete}>
+            <Glyphicon data-name={name} data-value={id} glyph='glyphicon glyphicon-remove'/>
+          </Button>
+          )
+        }else{
+          return (
+            <Button bsSize='xsmall' onClick={props.handleDelete}>
+              <Glyphicon data-name={name} data-value={id} glyph='glyphicon glyphicon-remove'/>
+            </Button>
+          )
+        }
+      }
+
+
 
     return (
       <div>
@@ -20,21 +55,22 @@ function Campuses (props) {
             </tr>
           </thead>
           <tbody>
-            {props.campuses.map((campus,key)=>{
+            {props.campuses.map((campus)=>{
               return (<tr key={campus.id}>
                 <td>{campus.name}</td>
-                <td><Link to={`/campuses/${campus.id}/students`}>
-                  <Button bsSize='xsmall'>
-                    <Glyphicon glyph='glyphicon glyphicon-education'/>
-                  </Button></Link></td>
+                <td>
+                  {/* does not show if student count below 1 */}
+                  {studentViewButton(campus.id)}
+                </td>
                 <td><Link to={`/campuses/${campus.id}`}>
                   <Button bsSize='xsmall'>
+
                     <Glyphicon glyph='glyphicon glyphicon-pencil'/>
                   </Button>
                 </Link></td>
-                <td><Button bsSize='xsmall' onClick={props.handleDelete}>
-                  <Glyphicon data-name={campus.name} data-value={campus.id} glyph='glyphicon glyphicon-remove'/>
-                </Button></td>
+                <td>
+                  {removeButton(campus.id,campus.name)}
+                </td>
               </tr>)})}
           </tbody>
         </Table>
@@ -44,15 +80,19 @@ function Campuses (props) {
 
 const mapStateToProps = (state) => {
   return {
-    campuses: state.campuses
+    campuses: state.campuses,
+    students: state.students
   }
 }
-const mapDispatchToProps= (dispatch) => {
+const mapDispatchToProps= (dispatch,ownProps) => {
   return {
     handleDelete(event){
       if(confirm(`Please confirm delete of ...${event.target.dataset.name}`)){
         dispatch(removeCampus(event.target.dataset.value))
       }
+    },
+    handleClick(event){
+      ownProps.history.push(`/campuses/${event.target.dataset.id}/students`)
     }
   }
 }

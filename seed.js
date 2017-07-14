@@ -24,33 +24,30 @@ var data = {
   ]
 };
 
-db.sync({})
-// .then(()=>{
-//   Campus.findAll()
-//   .then()
-// })
-.then(function () {
+db.sync({force: true})
+.then(() => {
   console.log("Dropped old data, now inserting data");
-  // const createCampusSeed = Promise.map(data.campuses, function (campus) {
-  //   console.log(campus)
-  //   return Campus.create(campus);
-  // });
+  const createCampusSeed = Promise.map(data.campuses, function (campus) {
+    console.log(campus)
+    return Campus.create(campus);
+  });
+  return Promise.all([createCampusSeed])
+})
+.then(() => {
+
   const creatingStudents = Promise.map(data.students, function (student) {
     console.log(student)
     return Student.create(student);
   });
-  // const creatingActivities = Promise.map(data.activities, function (activity) {
-  //   return Activity.create(activity, { include: [Place] });
-  // });,creatingStudents createCampusSeed
- return Promise.all([creatingStudents]);
+  return Promise.all([creatingStudents]);
 })
-.then(function () {
-  console.log('database there');
+.then(() => {
+  console.log('students should be there!')
 })
 .catch(function (err) {
   console.error('There was totally a problem', err, err.stack);
 })
-// .finally(function () {
-// db.close(); // creates but does not return a promise
+// .finally(()=> {
+//   db.close(); // creates but does not return a promise
 //   return null; // stops bluebird from complaining about un-returned promise
 // });

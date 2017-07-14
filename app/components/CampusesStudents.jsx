@@ -13,7 +13,10 @@ class CampusesStudents extends Component {
     return (
       <div>
         <h1>Students: {this.props.campus.name}</h1>
+
+        <div className='displayimg'><img src={this.props.campus.image}/></div>
         <h4><Link to={`/students/add`}>Add New Student</Link></h4>
+
         <div>
           <Table bordered hover responsive striped>
             <thead>
@@ -22,7 +25,7 @@ class CampusesStudents extends Component {
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Edit</th>
-                <th>Campus</th>
+
               </tr>
             </thead>
             <tbody>
@@ -36,7 +39,7 @@ class CampusesStudents extends Component {
                       <Glyphicon glyph='glyphicon glyphicon-pencil'/>
                     </Button>
                   </Link></td>
-                  <td>{student.campusId}</td>
+
                 </tr>
                 )
               })}

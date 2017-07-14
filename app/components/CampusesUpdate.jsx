@@ -1,84 +1,49 @@
 import React, { Component } from 'react';
 import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
-import {getOneCampus,putCampus} from '../reducers'
+import {getOneCampus,putCampus,updateCampus} from '../reducers'
+import {connect} from 'react-redux'
 import store from '../store'
+import {theValidator, campusButton} from './FormValidateCampus'
 
-export default class CampusesUpdate extends Component {
-  constructor (){
-    super()
-    this.state = store.getState()
-    this.handleOnChange = this.handleOnChange.bind(this);
-    this.handleOnSubmit = this.handleOnSubmit.bind(this)
-  }
+class CampusUpdate extends Component {
 
   componentDidMount () {
-    const editThunk = getOneCampus(this.props.match.params.id)
-    store.dispatch(editThunk)
-    this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
-  }
-
-  componentWillUnmount () {
-    this.unsubscribe();
-  }
-
-  handleOnSubmit(event){
-    event.preventDefault()
-    const evtObj = {
-      id: this.props.match.params.id,
-      name: event.target.campus.value,
-      image: event.target.image.value
-    }
-    const putThunk = putCampus(this.props.match.params.id,evtObj)
-    store.dispatch(putThunk)
-    .then(()=>{this.props.history.push("/campuses")})
-
-  }
-
-  handleOnChange(event){
-    const target = event.target
-    const value = target.type === 'checkbox' ? target.checked : target.value
-    const name = target.name
-    const campusid = Number(event.target.dataset.id)
-    console.log(value,event.target.dataset.id)
-    this.setState({
-      campusUpdate:{[name]: value}
-    })
+    this.props.fetchUpdateCampusData(this.props.match.params.id)
   }
 
    render() {
 
-     if(this.state.campusUpdate){
-       const campusSelect = this.state.campusUpdate
+   if(this.props.campusUpdate){
+       const campusSelect = this.props.campusUpdate
+       const {nameValidation, imageValidation} = theValidator(campusSelect)
+
      return (
        <div>
          <h1>Edit Campus</h1>
 
-         <form onSubmit={this.handleOnSubmit}>
-           <FormGroup bsSize="large">
+         <form onSubmit={this.props.handleOnSubmit}>
+           <input type="hidden" name="id" value={this.props.match.params.id}/>
+           <FormGroup bsSize="large" validationState={nameValidation}>
              <ControlLabel>Campus Name</ControlLabel>
              <FormControl
                className="form-control"
-               name='campus'
+               name='name'
                type='text'
                value={campusSelect.name}
-               onChange={this.handleOnChange}
+               onChange={this.props.handleOnChange}
              required/>
            </FormGroup>
-           <FormGroup bsSize="large">
+           <FormGroup bsSize="large" validationState={imageValidation}>
              <ControlLabel>Image URL</ControlLabel>
              <FormControl
                className="form-control"
                name='image'
                type='text'
                value={campusSelect.image}
-               onChange={this.handleOnChange}
+               onChange={this.props.handleOnChange}
              required/>
            </FormGroup>
-           <Button type="submit">
-             Enter
-           </Button>
-
-
+           {campusButton(imageValidation,nameValidation)}
          </form>
 
        </div>
@@ -88,3 +53,40 @@ export default class CampusesUpdate extends Component {
    }
    }
 }
+const mapStateToProps = function(state){
+  return{
+    campusUpdate: state.campusUpdate
+  }
+}
+
+const mapDispatchToProps = function(dispatch,ownProps){
+   return{
+     handleOnChange(event){
+       const value = event.target.value
+       const name = event.target.name
+       dispatch(updateCampus({[name]: value}))
+     },
+     handleOnSubmit(event){
+       event.preventDefault()
+       const evtObj = {
+         id: event.target.id.value,
+         name: event.target.name.value,
+         image: event.target.image.value
+       }
+       const putThunk = putCampus(event.target.id.value,evtObj)
+       dispatch(putThunk)
+       .then(()=>{
+         ownProps.history.push('/campuses')
+       })
+
+     },
+     fetchUpdateCampusData(id){
+       const editThunk = getOneCampus(id)
+       dispatch(editThunk)
+     }
+
+   }
+ }
+
+ const CampusUpdateContainer = connect(mapStateToProps,mapDispatchToProps)(CampusUpdate)
+ export default CampusUpdateContainer

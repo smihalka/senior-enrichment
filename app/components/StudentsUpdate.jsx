@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {FormGroup, FormControl, Button, ControlLabel} from 'react-bootstrap'
-import {getOneStudent,putStudent} from '../reducers'
+import {getOneStudent,putStudent,updateStudent} from '../reducers'
 import store from '../store'
+import validator from 'email-validator'
 
 export default class StudentsUpdate extends Component {
   constructor (){
@@ -39,10 +40,11 @@ export default class StudentsUpdate extends Component {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
-  //not sure about this part here
+    console.log(value)
      this.setState({
        studentUpdate:{[name]: value}
      })
+    // store.dispatch(updateStudent({[name]: value}))
 }
 
 render() {
@@ -83,15 +85,18 @@ render() {
               onChange={this.handleOnChange}
             required/>
           </FormGroup>
-          <FormGroup bsSize="large">
-            <ControlLabel>Campus Id</ControlLabel>
-            <FormControl
-              className="form-control"
-              name='campusId'
-              type='text'
-              value={studentSelect.campusId}
-              onChange={this.handleOnChange}
-            required/>
+
+          <FormGroup controlId="formControlsSelect" bsSize="large">
+            <ControlLabel>Campus</ControlLabel>
+            <FormControl componentClass="select" placeholder="select" onChange={this.handleOnChange} name='campusId'>
+              {this.state.campuses.map((campus)=>{
+                if(campus.id===studentSelect.campusId){
+                  return <option key={campus.id} selected="selected" value={campus.id}>{campus.id}: {campus.name}</option>
+                }else{
+                  return <option key={campus.id} value={campus.id}>{campus.id}: {campus.name}</option>
+                }
+              })}
+            </FormControl>
           </FormGroup>
           <Button type="submit">
             Enter

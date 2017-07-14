@@ -1,17 +1,67 @@
 import React, { Component } from 'react';
 import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
 import store from '../store';
-import {addStudent,postStudent} from '../reducers'
+import {addStudent,postStudent,emptyStudent} from '../reducers'
 import {connect} from 'react-redux'
+import validator from 'email-validator'
 
 
 function StudentsAdd (props) {
+  //valid stuff could make file likely if have time
+    const theValidator = (props)=>{
+      let first_nameValidation = null
+      let last_nameValidation = null
+      let email_Validation = null
+      if(props.first_name){
+        if(props.first_name.length < 3){
+          first_nameValidation = 'error'
+        }else{
+          first_nameValidation = 'success'
+        }
+      }
+      if(props.last_name){
+        if(props.last_name.length < 3){
+          last_nameValidation = 'error'
+        }else{
+          last_nameValidation = 'success'
+        }
+      }
 
+      if(validator.validate(props.email)){
+        email_Validation = 'success'
+      }else{
+        if(!props.email){
+          email_Validation = null
+        }else{
+          email_Validation = 'error'
+        }
+
+      }
+      return ({first_nameValidation,last_nameValidation,email_Validation})
+    }
+
+    const {first_nameValidation, last_nameValidation, email_Validation} = theValidator(props.newStudent)
+
+    const addNewStudentButton = (first,last,email)=>{
+      if(first !== 'success' || last !== 'success' || email !== 'success'){
+        return (
+          <Button disabled type="submit">
+            Enter
+          </Button>
+        )
+      }else{
+        return(
+          <Button type="submit">
+            Enter
+          </Button>
+        )
+      }
+    }
       return (
         <div>
           <h3>Add New Student</h3><br/>
           <form onSubmit={props.handleOnSubmit}>
-            <FormGroup bsSize="large">
+            <FormGroup bsSize="large" validationState={first_nameValidation}>
               <ControlLabel>First Name</ControlLabel>
               <FormControl
                 className="form-control"
@@ -21,7 +71,7 @@ function StudentsAdd (props) {
                 onChange={props.handleOnChange}
               required/>
             </FormGroup>
-            <FormGroup bsSize="large">
+            <FormGroup bsSize="large" validationState={last_nameValidation}>
               <ControlLabel>Last Name</ControlLabel>
               <FormControl
                 className="form-control"
@@ -31,7 +81,7 @@ function StudentsAdd (props) {
                 onChange={props.handleOnChange}
               required/>
             </FormGroup>
-            <FormGroup bsSize="large">
+            <FormGroup bsSize="large" validationState={email_Validation}>
               <ControlLabel>Email</ControlLabel>
               <FormControl
                 className="form-control"
@@ -41,19 +91,16 @@ function StudentsAdd (props) {
                 onChange={props.handleOnChange}
               required/>
             </FormGroup>
-            <FormGroup bsSize="large">
+            <FormGroup controlId="formControlsSelect" bsSize="large">
               <ControlLabel>Campus</ControlLabel>
-              <FormControl
-                className="form-control"
-                name='campusId'
-                type='text'
-                placeholder="campus"
-                onChange={props.handleOnChange}
-              required/>
+              <FormControl componentClass="select" placeholder="select" onChange={props.handleOnChange} name='campusId'>
+                {props.campuses.map((campus)=>{
+                  return <option key={campus.id} value={campus.id}>{campus.id}: {campus.name}</option>
+                })}
+              </FormControl>
             </FormGroup>
-            <Button type="submit">
-              Enter
-            </Button>
+
+            {addNewStudentButton(first_nameValidation,last_nameValidation,email_Validation)}
           </form>
         </div>
       )
@@ -61,7 +108,12 @@ function StudentsAdd (props) {
   }
 
 
-  const mapStateToProps = null
+  const mapStateToProps = function(state){
+    return{
+      newStudent: state.newStudent,
+      campuses: state.campuses
+    }
+  }
 
   const mapDispatchToProps = function(dispatch,ownProps){
      return{
@@ -81,7 +133,8 @@ function StudentsAdd (props) {
            email: event.target.email.value,
            campusId: event.target.campusId.value
          })).then(()=>{
-           ownProps.history.push("/students")
+          dispatch(emptyStudent({}))
+          ownProps.history.push("/students")
          })
 
        }

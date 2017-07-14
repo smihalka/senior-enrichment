@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import {FormGroup, FormControl, Button,ControlLabel,HelpBlock} from 'react-bootstrap'
 import store from '../store';
-import {addCampus,postCampus} from '../reducers'
+import {addCampus,postCampus,emptyCampus} from '../reducers'
 import {connect} from 'react-redux'
+import {theValidator, campusButton} from './FormValidateCampus'
 
 function CampusesAdd (props) {
+
+    const {nameValidation, imageValidation} = theValidator(props.newCampus)
+
     return (
       <div>
         <h3>Add New Campus</h3><br/>
         <form onSubmit={props.handleOnSubmit}>
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" validationState={nameValidation}>
             <ControlLabel>Campus Name</ControlLabel>
             <FormControl
               name='name'
@@ -17,7 +21,7 @@ function CampusesAdd (props) {
               placeholder="Enter New Campus"
               onChange={props.handleOnChange}/>
           </FormGroup>
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" validationState={imageValidation}>
             <ControlLabel>Image Url</ControlLabel>
             <FormControl
               name='image'
@@ -26,22 +30,23 @@ function CampusesAdd (props) {
               onChange={props.handleOnChange}/>
             <HelpBlock>Please contact admin to upload image to server for you</HelpBlock>
           </FormGroup>
-          <Button type="submit">
-            Enter
-          </Button>
+          {campusButton(imageValidation,nameValidation)}
         </form>
       </div>
     )
 }
 
-const mapStateToProps = null
+const mapStateToProps = function(state){
+  return{
+    newCampus: state.newCampus
+  }
+}
 
 const mapDispatchToProps = function(dispatch,ownProps){
    return{
      handleOnChange(event){
        const value = event.target.value
        const name = event.target.name
-       console.log(name,value)
        dispatch(addCampus({[name]: value}))
      },
      handleOnSubmit(event){
@@ -52,6 +57,7 @@ const mapDispatchToProps = function(dispatch,ownProps){
          name: event.target.name.value,
          image: event.target.image.value
        })).then(()=>{
+         dispatch(emptyCampus({}))
          ownProps.history.push('/campuses')
        })
 

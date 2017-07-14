@@ -12,7 +12,10 @@ const initialState = {
   students: [],
   studentUpdate: {},
   campusUpdate: {},
-  campusStudents: []
+  campusStudents: [],
+  campusAddFormValidationStates: {},
+  newCampus: {},
+  newStudent: {}
 }
 
 /* -----------------    ACTION TYPES     ------------------ */
@@ -35,7 +38,8 @@ const DELETE_STUDENT = 'DELETE_STUDENT'
 
 const PUT_STUDENT = 'PUT_STUDENT'
 const PUT_CAMPUS  = 'PUT_CAMPUS'
-
+const EMPTY_CAMPUS  = 'EMPTY_CAMPUS'
+const EMPTY_STUDENT  = 'EMPTY_STUDENT'
 const GET_STUDENTS_CAMPUS  = 'GET_STUDENTS_CAMPUS'
 
 
@@ -50,16 +54,36 @@ function getStudents(students) {
   return action
 }
 
+export function updateStudent(student) {
+  const action = {type: UPDATE_STUDENT, student}
+  return action
+}
+
+export function updateCampus(updateCampus) {
+  const action = {type: UPDATE_CAMPUS, updateCampus}
+  return action
+}
+
+//yes export
 export function addCampus(newCampus) {
   const action = {type: ADD_CAMPUS, newCampus};
   return action
 }
 
-export function addNewCampus(campus) {
-  const action = {type: POST_CAMPUS, campus}
+export function emptyCampus(newCampus) {
+  const action = {type: EMPTY_CAMPUS, newCampus};
+  return action
+}
+export function emptyStudent(newStudent) {
+  const action = {type: EMPTY_STUDENT, newStudent};
   return action
 }
 
+function addNewCampus(campus) {
+  const action = {type: POST_CAMPUS, campus}
+  return action
+}
+//yes export
 export function addStudent(newStudent) {
   const action = {type: ADD_STUDENT, newStudent}
   return action
@@ -253,19 +277,35 @@ const rootReducer = function(state = initialState, action) {
         students: action.students})
     case ADD_CAMPUS:
     return Object.assign({},state,{
+         newCampus: Object.assign({},state.newCampus,action.newCampus)
+     })
+    case EMPTY_CAMPUS:
+    return Object.assign({},state,{
         newCampus: action.newCampus
     })
+    case EMPTY_STUDENT:
+    return Object.assign({},state,{
+         newStudent: action.newStudent
+     })
     case POST_CAMPUS:
     return Object.assign({},state,{
         campuses: state.campuses.concat(action.campus)
     })
     case ADD_STUDENT:
     return Object.assign({},state,{
-        newStudent: action.newStudent
+        newStudent: Object.assign({},state.newStudent,action.newStudent)
     })
     case POST_STUDENT:
     return Object.assign({},state,{
         students: state.students.concat(action.student)
+    })
+    case UPDATE_STUDENT:
+    return Object.assign({},state,{
+        studentUpdate: Object.assign({},state.updateStudent,action.updateStudent)
+    })
+    case UPDATE_CAMPUS:
+    return Object.assign({},state,{
+        campusUpdate: Object.assign({},state.campusUpdate,action.updateCampus)
     })
     case DELETE_CAMPUS:
     return Object.assign({},state,{
@@ -303,6 +343,6 @@ const rootReducer = function(state = initialState, action) {
     })
     default: return state
   }
-};
+}
 
 export default rootReducer
