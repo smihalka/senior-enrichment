@@ -15,7 +15,7 @@ class CampusUpdate extends Component {
    if(this.props.campusUpdate){
        const campusSelect = this.props.campusUpdate
        const {nameValidation, imageValidation} = theValidator(campusSelect)
-
+      console.log(this.props.campusUpdate)
      return (
        <div>
          <h1>Edit Campus</h1>
