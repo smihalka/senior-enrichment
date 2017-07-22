@@ -12,6 +12,6 @@ var Campus = db.define('campus', {
     type: Sequelize.STRING,
     allowNull: false
   }
-});
+})
 
-module.exports = Campus;
+module.exports = Campus

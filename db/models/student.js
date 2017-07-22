@@ -19,7 +19,7 @@ const Student = db.define('student', {
       isEmail: true
     }
   },
-});
+})
 
 //Students belong to University... The man is always owning,
 //never really giving Campsues have many students, but may have none at all
@@ -27,4 +27,4 @@ const Student = db.define('student', {
 
 Student.belongsTo(Campus, {as: 'campus'})
 
-module.exports = Student;
+module.exports = Student
